@@ -1,21 +1,33 @@
 const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
-const User = require('./modals/user');
-const userRoutes = require('./routes/userRoutes'); // Assuming you have a userRoute file
+const userRoutes = require('./routes/userRoutes');
+const cors = require('cors');
+
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-app.use(express.json()); // <-- Add this line
+// Middleware
+app.use(cors({
+  origin: 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
+app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log('MongoDB connected');
-  })
-  .catch(err => console.error('MongoDB connection error:', err));
+// Routes
+app.use('/api/users', userRoutes);
 
-app.use('/api/users',userRoutes);
-app.use('/api/cab',userRoutes);
-app.use('/api/location',userRoutes);
-
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Connect to MongoDB and start server
+mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost:27017/cabservice', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => {
+  console.log('MongoDB connected');
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+})
+.catch(err => {
+  console.error('MongoDB connection error:', err);
+});
