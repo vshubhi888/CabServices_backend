@@ -8,6 +8,8 @@ async function registerUser(req, res) {
     try {
         const { name, email, password, role, phone } = req.body;
         // Check if user already exists
+        
+        
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: "Email already registered" });
