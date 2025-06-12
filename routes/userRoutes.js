@@ -1,7 +1,7 @@
 const express = require('express');
 const User = require('../modals/user');
 const router = express.Router();
-const authenticateToken = require('../security/jwt');
+const { authenticateToken } = require('../security/jwt');
 
 // importing the user controller functions.
 const { registerUser, loginUser, getUserProfile } = require('../controllers/userController');

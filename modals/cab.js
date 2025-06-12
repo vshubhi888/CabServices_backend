@@ -1,18 +1,19 @@
-const mongoose= require('mongoose');
-const cabSchema = new mongoose.Schema ({
-    name:{ type: String, required: true },
-    vehcileNumber : {type: String,required  :true},
-    driverName: { type: String, required: true },
-    driverContact: { type: String, required: true },
-    isAvailable: { type: Boolean, default: true },
-    model: String,
-    capacity :{type: Number, default :4},
-    CurrentLocation: {
-        lat:Number,
-        Lng:Number
-    
+const mongoose = require('mongoose');
 
-    }
+const cabSchema = new mongoose.Schema({
+    cabNumber: { type: String, required: true, unique: true },
+    model: { type: String, required: true },
+    capacity: { type: Number, default: 4 },
+    driver: { type: String, required: true },
+    isActive: { type: Boolean, default: true }, // New field for cab status
+    createdAt: { type: Date, default: Date.now }, // Optional: track creation time
+    updatedAt: { type: Date, default: Date.now }  // Optional: track update time
 });
-module.exports = mongoose.model('Cab', cabSchema, 'cab'); // Explicitly set the collection name to 'cab'
-// This ensures that the model uses the 'cab' collection in MongoDB
+
+// Optional: update 'updatedAt' on save
+cabSchema.pre('save', function(next) {
+    this.updatedAt = Date.now();
+    next();
+});
+
+module.exports = mongoose.model('Cab', cabSchema);

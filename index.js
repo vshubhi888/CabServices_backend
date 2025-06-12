@@ -4,7 +4,7 @@ require('dotenv').config();
 const userRoutes = require('./routes/userRoutes');
 const cors = require('cors');
 const createAdminUser = require('./util/create_admin');
-
+const cabRoutes = require('./routes/cabRoutes');
 const app = express();
 const PORT = process.env.PORT || 8080;
 
@@ -19,6 +19,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/users', userRoutes);
+app.use('/api/cabs', cabRoutes );
 
 // Connect to MongoDB and start server
 mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost:27017/cabservice', {
