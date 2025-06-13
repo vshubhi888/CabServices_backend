@@ -23,6 +23,22 @@ async function registerCab(req, res) {
   }
 }
 
+/**
+ * Fetches all cabs.
+ */
+async function getAllCabs(req, res) {
+  try {
+    const { role } = req.body;
+    const filter = role ? { role } : {};
+    const cabs = await Cab.find(filter);
+    res.status(200).json({ cabs });
+  } catch (error) {
+    console.error('Fetch cabs error:', error);
+    res.status(500).json({ message: "Error fetching cabs", error });
+  }
+}
+
+
 module.exports = {
-  registerCab
+  registerCab, getAllCabs
 };

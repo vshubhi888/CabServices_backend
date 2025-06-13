@@ -76,9 +76,28 @@ async function getUserProfile(req, res) {
         return res.status(500).json({ message: "Error fetching user profile", error });
     }
 }
+/**
+ * Fetches all users with the role 'driver'.
+ */
+/**
+ * Fetches all users by role.
+ */
+async function getAllByRole(req, res) {
+    try {
+        const { role } = req.query;
+        if (!role) {
+            return res.status(400).json({ message: "Role query parameter is required" });
+        }
+        const users = await User.find({ role }).select('-password');
+        res.status(200).json({ message: `All users with role: ${role}`, users });
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching users by role", error });
+    }
+}
 
 module.exports = {
     registerUser,
     loginUser,
-    getUserProfile
+    getUserProfile,
+    getAllByRole
 };
