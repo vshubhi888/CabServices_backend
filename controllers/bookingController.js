@@ -8,7 +8,7 @@ async function registerBooking(req, res)
         const booking=new Booking(req.body);
         await booking.save();
 
-         // Notify driver if connected
+        // Notify driver if connected
         const io = req.app.get('io');
         const drivers = req.app.get('drivers');
         const driverSocketId = drivers[booking.driver.toString()];
@@ -24,9 +24,9 @@ async function registerBooking(req, res)
 
 async function updateBooking(req, res) {
     try {
-        // Support both params and query for flexibility
-        const id = req.params.id || req.query.bookingid;
-        const status_input = req.params.status || req.query.status;
+        // Accept bookingId and status from body for POST requests
+        const id = req.body.bookingId || req.params.id || req.query.bookingid;
+        const status_input = req.body.status || req.params.status || req.query.status;
 
         if (!id || !status_input) {
             return res.status(400).json({ message: 'Missing booking id or status' });

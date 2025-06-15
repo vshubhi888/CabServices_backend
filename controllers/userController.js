@@ -66,8 +66,16 @@ async function loginUser(req, res) {
  */
 async function getUserProfile(req, res) {
     try {
-        // req.user is set by authenticateToken middleware
-        const user = await User.findById(req.user.id).select('-password');
+        // Get token from Authorization header
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.split(' ')[1];
+        if (!token) {
+            return res.status(401).json({ message: "No token provided" });
+        }
+
+        // Verify token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
+        const user = await User.findById(decoded.id).select('-password');
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
